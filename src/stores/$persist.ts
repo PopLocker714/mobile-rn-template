@@ -1,78 +1,75 @@
-import { Storage } from '@op-engineering/op-sqlite'
-import { setPersistentEngine, type PersistentListener, type PersistentEvent } from '@nanostores/persistent'
+import { type PersistentEvent, type PersistentListener, setPersistentEngine } from "@nanostores/persistent";
+import { Storage } from "@op-engineering/op-sqlite";
 
 const db = new Storage({
-    location: 'persist'
-})
+	location: "persist",
+});
 
-let listeners: PersistentListener[] = []
+let listeners: PersistentListener[] = [];
 
 function emit(key: string, newValue: string) {
-    const event: PersistentEvent = {
-        key,
-        newValue
-    }
+	const event: PersistentEvent = {
+		key,
+		newValue,
+	};
 
-    for (const cb of listeners) {
-        cb(event)
-    }
+	for (const cb of listeners) {
+		cb(event);
+	}
 }
 
+const storage = new Proxy<Record<string, string>>(
+	{},
+	{
+		get(_, key: string) {
+			if (typeof key !== "string") return undefined;
+			return db.getItemSync(key) ?? "";
+		},
 
+		set(_, key: string, value: string) {
+			if (typeof key !== "string") return true;
 
-const storage = new Proxy<Record<string, any>>(
-    {},
-    {
-        get(_, key: string) {
-            if (typeof key !== 'string') return undefined
-            return db.getItemSync(key) ?? ''
-        },
+			db.setItemSync(key, value);
+			emit(key, value);
+			return true;
+		},
 
-        set(_, key: string, value: string) {
-            if (typeof key !== 'string') return true
+		deleteProperty(_, key: string) {
+			if (typeof key !== "string") return true;
 
-            db.setItemSync(key, value)
-            emit(key, value)
-            return true
-        },
+			db.removeItemSync(key);
+			emit(key, "");
+			return true;
+		},
 
-        deleteProperty(_, key: string) {
-            if (typeof key !== 'string') return true
+		has(_, key: string) {
+			if (typeof key !== "string") return false;
+			return db.getItemSync(key) !== null;
+		},
 
-            db.removeItemSync(key)
-            emit(key, '')
-            return true
-        },
+		ownKeys() {
+			return db.getAllKeys();
+		},
 
-        has(_, key: string) {
-            if (typeof key !== 'string') return false
-            return db.getItemSync(key) !== null
-        },
-
-        ownKeys() {
-            return db.getAllKeys()
-        },
-
-        getOwnPropertyDescriptor() {
-            return {
-                enumerable: true,
-                configurable: true
-            }
-        }
-    }
-)
-
+		getOwnPropertyDescriptor() {
+			return {
+				enumerable: true,
+				configurable: true,
+			};
+		},
+	},
+);
 
 const events = {
-    addEventListener(_key: string, callback: PersistentListener) {
-        listeners.push(callback)
-    },
+	addEventListener(_key: string, callback: PersistentListener) {
+		listeners.push(callback);
+	},
 
-    removeEventListener(_key: string, callback: PersistentListener) {
-        listeners = listeners.filter(i => i !== callback)
-    },
+	removeEventListener(_key: string, callback: PersistentListener) {
+		listeners = listeners.filter((i) => i !== callback);
+	},
 
-    perKey: false
-}
+	perKey: false,
+};
 
-setPersistentEngine(storage, events)
+setPersistentEngine(storage, events);

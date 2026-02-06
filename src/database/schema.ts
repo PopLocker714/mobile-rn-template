@@ -1,7 +1,7 @@
 import { sqliteTable as table } from "drizzle-orm/sqlite-core";
 import * as t from "drizzle-orm/sqlite-core";
 
-export const events = table("events",
+export const $TEvents = table("events",
     {
         id: t.int().primaryKey({ autoIncrement: true }),
         type: t.text({ enum: ['grow_fuild_item', 'growup_fuild_item'] }).notNull(),
@@ -9,4 +9,4 @@ export const events = table("events",
     }
 );
 
-export type TInsertEvent = typeof events.$inferInsert
+export type TInsertEvent = typeof $TEvents.$inferInsert

@@ -2901,7 +2901,7 @@ SPEC CHECKSUMS:
   glog: 5683914934d5b6e4240e497e0f4a3b42d1854183
   hermes-engine: 1824131278e49241043d6d34341939f9fbf42bbe
   HotUpdater: 3420a430784a2a0a7e7a37e928414c6209979743
-  op-sqlite: bafff369cecaee4fe65c89eec47deaba26f2db95
+  op-sqlite: 1ad52f0aaf66d28818c8c18b90edb10b23f0da5f
   RCT-Folly: 846fda9475e61ec7bcbf8a3fe81edfcaeb090669
   RCTDeprecation: a41bbdd9af30bf2e5715796b313e44ec43eefff1
   RCTRequired: 7be34aabb0b77c3cefe644528df0fa0afad4e4d0
