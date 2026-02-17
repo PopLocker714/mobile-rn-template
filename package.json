@@ -5,9 +5,9 @@
 	"scripts": {
 		"android": "react-native run-android",
 		"ios": "react-native run-ios",
-		"lint": "biome lint --write",
+		"lint": "biome lint --write && tsc --noEmit",
+		"format": "biome format --write",
 		"start": "react-native start",
-		"test": "jest",
 		"pods:nuke": "cd ios && rm -rf Pods && rm -rf Podfile.lock && bundle exec pod install",
 		"version:sync": "bun scripts/sync-version.mjs",
 		"prerelease:ios": "bunx react-native run-ios --mode Release"

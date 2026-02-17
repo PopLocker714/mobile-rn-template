@@ -1,6 +1,5 @@
-
-import * as schema from './schema'
+import * as schema from "./schema";
 
 export default {
-    ...schema
-}
+	...schema,
+};
